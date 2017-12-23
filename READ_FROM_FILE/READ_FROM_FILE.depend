@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1511795427 source:d:\suckhead\docs\casovi\materijali\c_codeblocks\c_generalno\read_from_file\main.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+

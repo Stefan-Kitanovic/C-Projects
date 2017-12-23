@@ -1,0 +1,16 @@
+# depslib dependency file v1.0
+1446667744 source:c:\users\miloš\desktop\c_zadaci\pokzadaci\main.c
+	<stdio.h>
+	<stdlib.h>
+
+1511389881 source:c:\users\miloš\desktop\c_zadaci\pokzadaci\nizoviprekopok.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+
+1511390227 source:c:\users\miloš\desktop\c_zadaci\pokzadaci\stringmalavelika.c
+	<stdio.h>
+
+1511391198 source:c:\users\miloš\desktop\c_zadaci\pokzadaci\poksort.c
+	<stdio.h>
+
