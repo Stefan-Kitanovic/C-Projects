@@ -5,7 +5,7 @@
 #define MAX_IME 20+1
 #define MAX_PREZIME 20+1
 
-//izvlacenje iz liste (return)
+
 
 typedef struct student
 {
@@ -127,7 +127,8 @@ void DeleteNode( STUDENT ** root, unsigned int index )
 
     temp1 = *root;
 
-    for ( i = 0; i < index-1 ; i++ )
+    for ( i = 0; i < i
+    ndex-1 ; i++ )
     {
         temp1 = temp1->next;
     }
