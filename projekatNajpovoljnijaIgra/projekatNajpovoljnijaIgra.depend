@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1514322787 source:c:\users\miloš\documents\github\c-projects\projekatnajpovoljnijaigra\main.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+

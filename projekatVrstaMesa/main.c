@@ -160,7 +160,7 @@ void switchNodes ( MESO ** root, int i)
     MESO *temp3;
     temp1 = *root;
 
-    if ( i == 0 )                       // No idea why it works, but it does
+    if ( i == 0 )
     {
         temp1 = temp1->next;
         (*root)->next = temp1->next;
