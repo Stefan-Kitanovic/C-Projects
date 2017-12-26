@@ -13,15 +13,15 @@ typedef struct meso_st
 
 } MESO;
 
-void AddNode ( MESO ** root, char grad[2], char meso[MAX_IME], float cena );
-FILE * SafeOpen ( char name[MAX_IME], char type[MAX_IME] );
-void LoadList ( MESO ** root, FILE *inputFile );
-MESO * Najpovoljnije ( MESO * root, FILE *outputFile, char vrsta[MAX_IME]);
-void Ispis ( MESO * root, FILE *outputFile, char vrsta[MAX_IME] );
-void Switch ( MESO ** root, int i);
-void Sortiraj ( MESO ** root );
-void FreeList ( MESO ** root );
-MESO * GetNode ( MESO ** root, unsigned int index );
+void addNode ( MESO ** root, char grad[2], char meso[MAX_IME], float cena );
+FILE * safeOpen ( char name[MAX_IME], char type[MAX_IME] );
+void loadList ( MESO ** root, FILE *inputFile );
+MESO * najpovoljnije ( MESO * root, FILE *outputFile, char vrsta[MAX_IME]);
+void ispis ( MESO * root, FILE *outputFile, char vrsta[MAX_IME] );
+void switchNodes ( MESO ** root, int i);
+void sort ( MESO ** root );
+void freeList ( MESO ** root );
+MESO * getNode ( MESO ** root, unsigned int index );
 
 int main( int nargs, char *args[] )
 {
@@ -36,23 +36,25 @@ int main( int nargs, char *args[] )
     MESO *root;
     root = NULL;
 
-    inputFile = SafeOpen( args[2], "r" );
-    LoadList(&root, inputFile);
+    inputFile = safeOpen( args[2], "r" );
+    loadList(&root, inputFile);
     fclose(inputFile);
 
-    outputFile = SafeOpen( args[3], "w");
-    Ispis(root, outputFile, args[1]);
+    outputFile = safeOpen( args[3], "w");
+    ispis(root, outputFile, args[1]);
 
-    Sortiraj(&root);
-    Ispis(root, outputFile, args[1]);
+    sort(&root);
+    //switchNodes(&root, 0);
+    ispis(root, outputFile, args[1]);
     fclose(outputFile);
-    FreeList(&root);
+
+    freeList(&root);
 
     return 0;
 }
 
 
-FILE * SafeOpen ( char name[MAX_IME], char type[MAX_IME] )
+FILE * safeOpen ( char name[MAX_IME], char type[MAX_IME] )
 {
     FILE *fileName;
 
@@ -72,7 +74,7 @@ FILE * SafeOpen ( char name[MAX_IME], char type[MAX_IME] )
     return fileName;
 }
 
-void AddNode ( MESO ** root, char grad[3], char meso[MAX_IME], float cena )
+void addNode ( MESO ** root, char grad[3], char meso[MAX_IME], float cena )
 {
     MESO *newNode;
 
@@ -103,17 +105,17 @@ void AddNode ( MESO ** root, char grad[3], char meso[MAX_IME], float cena )
     temp->next = newNode;
 }
 
-void LoadList ( MESO ** root, FILE *inputFile )
+void loadList ( MESO ** root, FILE *inputFile )
 {
     MESO meso;
     while ( (fscanf(inputFile,"%s %s %f", meso.grad, meso.meso, &meso.cena)) != EOF  )
     {
-        AddNode(root, meso.grad, meso.meso, meso.cena);
+        addNode(root, meso.grad, meso.meso, meso.cena);
     }
 }
 
 
-MESO * Najpovoljnije ( MESO * root, FILE *outputFile, char vrsta[MAX_IME])
+MESO * najpovoljnije ( MESO * root, FILE *outputFile, char vrsta[MAX_IME])
 {
     MESO *temp;
     MESO *minCena;
@@ -138,7 +140,7 @@ MESO * Najpovoljnije ( MESO * root, FILE *outputFile, char vrsta[MAX_IME])
     return minCena;
 }
 
-MESO * GetNode ( MESO ** root, unsigned int index )
+MESO * getNode ( MESO ** root, unsigned int index )
 {
     MESO *temp;
     temp = *root;
@@ -151,27 +153,38 @@ MESO * GetNode ( MESO ** root, unsigned int index )
     return temp;
 }
 
-void Switch ( MESO ** root, int i)
+void switchNodes ( MESO ** root, int i)
 {
     MESO *temp1;
     MESO *temp2;
     MESO *temp3;
-
     temp1 = *root;
+
+    if ( i == 0 )                       // No idea why it works, but it does
+    {
+        temp1 = temp1->next;
+        (*root)->next = temp1->next;
+        temp1->next = *root;
+        *root = temp1;
+        return;
+    }
+
 
     int k;
 
-    for ( k = 0; k < i; k++ )
+    for ( k = 0; k < i-1 ; k++ )
     {
         temp1 = temp1->next;
     }
+
+    temp2 = temp1->next;
+    temp3 = temp2->next;
 
     temp1->next = temp3;
     temp2->next = temp3->next;
     temp3->next = temp2;
 }
-
-void Sortiraj ( MESO ** root )
+void sort ( MESO ** root )
 {
     MESO *temp;
     temp = *root;
@@ -179,28 +192,30 @@ void Sortiraj ( MESO ** root )
     while ( temp != NULL )
     {
         nodes++;
+        temp = temp->next;
     }
 
     int i,j;
     for ( i = 0; i < nodes - 1; i++)
     {
-        for ( j = i; j < nodes; j++)
+        for ( j = 0; j < nodes - i - 1; j++)
         {
-            if ( GetNode(root,i)->cena < GetNode(root,j)->cena)
+            if ( getNode(root, j)->cena > getNode(root, j+1)->cena)
             {
-                Switch(root, i , j);
+                //printf("\nSwitched:  [%.2f]  and  [%.2f]\n", GetNode(root, i)->cena, GetNode(root, j)->cena);
+                switchNodes(root, j );
             }
         }
     }
 }
 
-void Ispis ( MESO * root, FILE *outputFile, char vrsta[MAX_IME] )
+void ispis ( MESO * root, FILE *outputFile, char vrsta[MAX_IME] )
 {
     MESO *temp;
     temp = root;
     MESO *minCena;
 
-    minCena = Najpovoljnije(root, outputFile, vrsta);
+    minCena = najpovoljnije(root, outputFile, vrsta);
 
     while ( temp != NULL )
     {
@@ -217,7 +232,7 @@ void Ispis ( MESO * root, FILE *outputFile, char vrsta[MAX_IME] )
     }
 }
 
-void FreeList ( MESO ** root )
+void freeList ( MESO ** root )
 {
     MESO *temp;
 
