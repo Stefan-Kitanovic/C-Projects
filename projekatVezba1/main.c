@@ -174,17 +174,15 @@ void parseIndexes ( STUDENT ** root )
     {
         char parsedNumber[MAX_INDEX];
         char parsedYear[MAX_INDEX];
-        char index[MAX_INDEX];
-        strcpy(index, temp->index);
-        for ( i = 2, j = 0; index[i] != '/'; i++, j++ )
+        for ( i = 2, j = 0; temp->index[i] != '/'; i++, j++ )
         {
-            parsedNumber[j] = index[i];
+            parsedNumber[j] = temp->index[i];
         }
         parsedNumber[j] = '\0';
 
-        for ( i += 1, j = 0; index[i] != '\0'; i++, j++ )
+        for ( i += 1, j = 0; temp->index[i] != '\0'; i++, j++ )
         {
-            parsedYear[j] = index[i];
+            parsedYear[j] = temp->index[i];
         }
         parsedYear[j] = '\0';
 
