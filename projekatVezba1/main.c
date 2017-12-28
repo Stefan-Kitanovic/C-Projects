@@ -13,18 +13,11 @@ typedef struct student_st
     char prezime[MAX_PREZIME];
     unsigned int poeni;
     struct student_st *next;
+
+    unsigned int parsedNumber;
+    unsigned int parsedYear;
 } STUDENT;
 
-typedef struct parsed_student
-{
-    unsigned int index;
-    unsigned int godina;
-    char ime[MAX_IME];
-    char prezime[MAX_PREZIME];
-    unsigned int poeni;
-    struct parsed_student *next;
-
-} PARSED;
 
 FILE *safeOpen ( char name[MAX_IME], char type[3] );
 void addNode ( STUDENT ** root, char index[MAX_INDEX], char ime[MAX_IME], char prezime[MAX_PREZIME], unsigned int poeni );
@@ -34,6 +27,7 @@ void switchNodes ( STUDENT ** root, int i );
 void parseIndexes ( STUDENT ** root );
 void sortList ( STUDENT ** root );
 void printSorted ( STUDENT * root, FILE *outputFile );
+void printList ( STUDENT * root );
 
 int main( int nargs, char *args[] )
 {
@@ -53,8 +47,10 @@ int main( int nargs, char *args[] )
     fclose(inputFile);
 
     outputFile = safeOpen ("sortirani_studenti.txt", "w");
+    parseIndexes(&root);
     sortList(&root);
-    printSorted(root, outputFile);
+    printList(root);
+    //printSorted(root, outputFile);
     fclose(outputFile);
 
 
@@ -127,7 +123,7 @@ STUDENT * getNode ( STUDENT ** root, unsigned int index )
 {
     STUDENT *temp;
     temp = *root;
-    int i = 0;
+    int i;
 
     for ( i = 0; i < index; i++ )
     {
@@ -172,21 +168,28 @@ void parseIndexes ( STUDENT ** root )
     STUDENT *temp;
     temp = *root;
 
-    PARSED *ptemp;
-    ptemp = NULL;
-
     int i,j;
 
     while ( temp != NULL )
     {
-        char parsedIndex[MAX_INDEX];
+        char parsedNumber[MAX_INDEX];
+        char parsedYear[MAX_INDEX];
         char index[MAX_INDEX];
         strcpy(index, temp->index);
-        for ( i = 2, j = 0; index[i] != '/', i++, j++ )
+        for ( i = 2, j = 0; index[i] != '/'; i++, j++ )
         {
-            parsedIndex[j] = index[i];
+            parsedNumber[j] = index[i];
         }
-        parsedIndex[j] = '\0';
+        parsedNumber[j] = '\0';
+
+        for ( i += 1, j = 0; index[i] != '\0'; i++, j++ )
+        {
+            parsedYear[j] = index[i];
+        }
+        parsedYear[j] = '\0';
+
+        temp->parsedNumber = atoi(parsedNumber);
+        temp->parsedYear = atoi (parsedYear);
 
         temp = temp->next;
     }
@@ -209,7 +212,7 @@ void sortList ( STUDENT ** root )
     {
         for ( j = 0; j < nodes - i - 1; j++)
         {
-            if ( strcmp(getNode(root, j), getNode(root, j+1)) > 0 )
+            if ( getNode(root, j)->parsedNumber < getNode(root, j+1)->parsedNumber );
             {
                 switchNodes(root, j);
             }
@@ -225,6 +228,18 @@ void printSorted ( STUDENT * root, FILE *outputFile )
     while ( temp != NULL )
     {
         fprintf(outputFile,"%s %s %s %d\n", temp->index, temp->ime, temp->prezime, temp->poeni );
+        temp = temp->next;
+    }
+}
+
+void printList ( STUDENT * root )
+{
+    STUDENT *temp;
+    temp = root;
+
+    while ( temp != NULL )
+    {
+        printf("RA %u - %u %s %s\n", temp->parsedNumber, temp->parsedYear, temp->ime, temp->prezime);
         temp = temp->next;
     }
 }
