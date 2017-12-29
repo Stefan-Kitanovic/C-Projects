@@ -127,8 +127,7 @@ void DeleteNode( STUDENT ** root, unsigned int index )
 
     temp1 = *root;
 
-    for ( i = 0; i < i
-    ndex-1 ; i++ )
+    for ( i = 0; i < index-1 ; i++ )
     {
         temp1 = temp1->next;
     }
