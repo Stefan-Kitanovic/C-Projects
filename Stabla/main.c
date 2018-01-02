@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #define MAX_IME (100+1)
 #define MAX_PREZIME (100+1)
@@ -24,6 +25,7 @@ typedef struct descriptor
 void Insert(DESCRIPTOR ** root, DESCRIPTOR * jewNode);
 DESCRIPTOR * CreateDesktiptor(int id, const char * ime, const char * prezime);
 void PrintTree(DESCRIPTOR * root);
+DESCRIPTOR * SearchNodeByName(DESCRIPTOR * root, char * ime);
 
 
 int main()
@@ -39,6 +41,9 @@ int main()
     Insert(&root, CreateDesktiptor(24, "Milica", "Bjekovic"));
     Insert(&root, CreateDesktiptor(5, "Natasa", "Peric"));
     Insert(&root, CreateDesktiptor(209, "Una", "Jovic"));
+    DESCRIPTOR * d;
+    d = SearchNodeByName(root, "Luka");
+    printf("Evo ga %d %s %s", d->model.id, d->model.ime, d->model.prezime);
 
     PrintTree(root);
 
@@ -118,4 +123,28 @@ void PrintTree(DESCRIPTOR * root)
     printf("ID: %d, RIGHT\n", root->model.id);
     PrintTree(root->right);
     printf("END %d\n", root->model.id);
+}
+
+DESCRIPTOR * SearchNodeByName(DESCRIPTOR * root, char * ime)
+{
+    if ( root == NULL )
+    {
+        return NULL;
+    }
+
+    if ( strcmp(root->model.ime, ime) == 0 )
+    {
+        return root;
+    }
+
+    DESCRIPTOR * d;
+    d = SearchNodeByName(root->left, ime);
+    if ( d != NULL)
+    {
+        return d;
+    }
+
+    d = SearchNodeByName(root->right, ime);
+
+    return d;
 }
